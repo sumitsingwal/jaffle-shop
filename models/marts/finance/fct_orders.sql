@@ -1,19 +1,24 @@
-with order as (
-    SELECT * FROM {{ ref('stg_jaffle_shop__orders') }}
+with orders as (
+
+    select * from {{ ref('stg_jaffle_shop__orders') }}
+
 ),
 
-payment as (
-    SELECT * FROM {{ ref('stg_stripe__payments') }}
+payments as (
+
+    select * from {{ ref('stg_stripe__payments') }}
+
 ),
 
 ord_pay as (
-    SELECT 
+
+    select
         ord.order_id,
         ord.customer_id,
         pay.amount
-    FROM order as ord
-    LEFT JOIN payment as pay
-    ON ord.order_id = pay.order_id
+
+    from orders as ord
+    left join payments as pay using (order_id)
 )
 
-SELECT * FROM ord_pay
+select * from ord_pay
